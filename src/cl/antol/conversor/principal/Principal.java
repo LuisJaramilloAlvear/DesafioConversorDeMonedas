@@ -3,6 +3,8 @@ import cl.antol.conversor.servicios.ExchangerateAPI;
 import cl.antol.conversor.utilidades.GeneradorDeArchivo;
 import cl.antol.conversor.utilidades.Titulos;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -24,8 +26,14 @@ public class Principal {
         monedas.put("INR", "Rupia India");
 
 
+        // Instanciar el generador de archivos
+        GeneradorDeArchivo generadorDeArchivo = new GeneradorDeArchivo();
+        String nombreArchivo = "resultado_conversion.txt";
+
         Titulos titulos = new Titulos();
         titulos.mostrarTitulo("Conversor de Monedas");
+
+
 
         // Ciclo principal
 
@@ -82,20 +90,27 @@ public class Principal {
             // Seleccionar moneda de destino
             String monedaDestino = (String) monedas.keySet().toArray()[opcion - 1];
 
-            // Lógica de conversión
+// Lógica de conversión
+
             ExchangerateAPI consulta = new ExchangerateAPI();
             try {
                 double tasaDeCambio = consulta.obtenerTasaDeCambio(monedaOrigen, monedaDestino);
                 double cantidadConvertida = cantidad * tasaDeCambio;
                 System.out.println("Cantidad en " + monedas.get(monedaDestino) + ": " + cantidadConvertida);
 
-                // Guardar el resultado en un archivo
-                String resultado = "Cantidad en " + monedas.get(monedaDestino) + ": " + cantidadConvertida;
-                GeneradorDeArchivo generadorDeArchivo = new GeneradorDeArchivo();
-                String nombreArchivo = "resultado_conversion.txt";
-                generadorDeArchivo.escribirEnArchivo(nombreArchivo, resultado);
+                // Obtener la fecha y hora actual
+                LocalDateTime fechaHoraActual = LocalDateTime.now();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                String fechaHoraFormateada = fechaHoraActual.format(formatter);
 
-//                System.out.println("Los datos se han guardado en " + nombreArchivo);
+                // Formatear el resultado con fecha y hora
+                String resultado = String.format("Registro: %s\nConvertido %.2f %s a %.2f %s\n",
+                        fechaHoraFormateada, cantidad, monedaOrigen, cantidadConvertida, monedaDestino);
+
+                // Guardar el resultado en un archivo (añadiendo contenido)
+                generadorDeArchivo.escribirEnArchivo(nombreArchivo, resultado, true);
+
+                System.out.println("Los datos se han guardado en " + nombreArchivo);
             } catch (RuntimeException e) {
                 System.err.println(e.getMessage());
             }

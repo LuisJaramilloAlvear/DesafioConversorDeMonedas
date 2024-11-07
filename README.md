@@ -55,6 +55,10 @@ funcionamiento del codigo.*
 ya convertido, estaremos en un LOOP hasta que indiquemos que queremos salir con la opcion que siempre aparecera al final 
 de los tipos de monedas, esta opcion podria variar si agregas mas monedas.*
 
+![Guardando el Registro](images/resultado.png)
+*Cada vez que el usuario hace una conversion se va generando un log donde queda guardado con fecha y hora la conversion
+realizada.*
+
 ## Contribución
 
 Las contribuciones son bienvenidas. Para contribuir, sigue estos pasos:
